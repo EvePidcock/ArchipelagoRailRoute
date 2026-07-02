@@ -36,8 +36,8 @@ class RailRouteWorld(World):
     web = web_world.RailRouteWebWorld()
 
     # This is how we associate the options defined in our options.py with our world.
-    options_dataclass = railroute_options.APQuestOptions
-    options: railroute_options.APQuestOptions  # Common mistake: This has to be a colon (:), not an equals sign (=).
+    options_dataclass = railroute_options.RailRouteOptions
+    options: railroute_options.RailRouteOptions  # Common mistake: This has to be a colon (:), not an equals sign (=).
 
     # Our world class must have a static location_name_to_id and item_name_to_id defined.
     # We define these in regions.py and items.py respectively, so we just set them here.
