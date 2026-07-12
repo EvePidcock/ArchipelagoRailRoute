@@ -18,25 +18,24 @@ from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle
 # A toggle is an option that can either be on or off. This will be represented by a checkbox on the website.
 # The default for a toggle is "off".
 # If you want a toggle to be on by default, you can use the "DefaultOnToggle" class instead of the "Toggle" class.
-class HardMode(Toggle):
+class RedTrains(Toggle):
     """
-    In hard mode, the basic enemy and the final boss will have more health.
-    The Health Upgrades become progression, as they are now required to beat the final boss.
+    Whether red trains should be included
     """
 
     # The docstring of an option is used as the description on the website and in the template yaml.
 
     # You'll also want to set a display name, which will determine what the option is called on the website.
-    display_name = "Hard Mode"
+    display_name = "Red Trains"
 
 
-class Hammer(Toggle):
+class SystemUpgradesLockedBehindKeys(Toggle):
     """
-    Adds another item to the itempool: The Hammer.
-    The top middle chest will now be locked behind a breakable wall, requiring the Hammer.
+    Locks the different tiers of system upgrade purchases behind items in the pool.
+    If off, the vanilla method of unlocking the different tiers (stars) is used
     """
 
-    display_name = "Hammer"
+    display_name = "System Upgrade Tier Keys"
 
 
 class ExtraStartingChest(Toggle):
@@ -108,8 +107,9 @@ class PlayerSprite(Choice):
 # This is in the format "option_name_in_snake_case: OptionClassName".
 @dataclass
 class RailRouteOptions(PerGameCommonOptions):
-    hard_mode: HardMode
-    hammer: Hammer
+    red_trains: RedTrains
+    system_upgrade_locked_behind_keys: SystemUpgradesLockedBehindKeys
+
     extra_starting_chest: ExtraStartingChest
     start_with_one_confetti_cannon: StartWithOneConfettiCannon
     trap_chance: TrapChance
@@ -121,7 +121,7 @@ class RailRouteOptions(PerGameCommonOptions):
 option_groups = [
     OptionGroup(
         "Gameplay Options",
-        [HardMode, Hammer, ExtraStartingChest, StartWithOneConfettiCannon, TrapChance],
+        [RedTrains, ExtraStartingChest, StartWithOneConfettiCannon, TrapChance],
     ),
     OptionGroup(
         "Aesthetic Options",

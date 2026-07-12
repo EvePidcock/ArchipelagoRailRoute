@@ -12,15 +12,63 @@ if TYPE_CHECKING:
 # Every location must have a unique integer ID associated with it.
 # We will have a lookup from location name to ID here that, in world.py, we will import and bind to the world class.
 # Even if a location doesn't exist on specific options, it must be present in this lookup.
+
+# ID Format: XXYYZZZ
+#
+# XX:
+#   10 = System Upgrades
+#        YY: Tier
+#           10 = Green 1, 20 = Green 2, 30 = Green 3, 40 = Red 1, 50 = Red 2, 60 = Red 3
+#        ZZZ: id
+#
+#   11 = Earning Green/Red Trains
+#       YY: Green (10) or Red (20)
+#       ZZZ: Count
 LOCATION_NAME_TO_ID = {
-    "Top Left Room Chest": 1,
-    "Top Middle Chest": 2,
-    "Bottom Left Chest": 3,
-    "Bottom Left Extra Chest": 4,
-    "Bottom Right Room Left Chest": 5,
-    "Bottom Right Room Right Chest": 6,
-    # Location IDs don't need to be sequential, as long as they're unique and greater than 0.
-    "Right Room Enemy Drop": 10,
+    "System Upgrades (Green) Tier 1 Purchase 1": 1010001,
+    "System Upgrades (Green) Tier 1 Purchase 2": 1010002,
+    "System Upgrades (Green) Tier 1 Purchase 3": 1010003,
+    "System Upgrades (Green) Tier 1 Purchase 4": 1010004,
+    "System Upgrades (Green) Tier 1 Purchase 5": 1010005,
+    "System Upgrades (Green) Tier 1 Purchase 6": 1010006,
+    "System Upgrades (Green) Tier 1 Purchase 7": 1010007,
+    "System Upgrades (Green) Tier 1 Purchase 8": 1010008,
+    "System Upgrades (Green) Tier 1 Purchase 9": 1010009,
+
+    "System Upgrades (Green) Tier 2 Purchase 1": 1020001,
+    "System Upgrades (Green) Tier 2 Purchase 2": 1020002,
+    "System Upgrades (Green) Tier 2 Purchase 3": 1020003,
+    "System Upgrades (Green) Tier 2 Purchase 4": 1020004,
+    "System Upgrades (Green) Tier 2 Purchase 5": 1020005,
+    "System Upgrades (Green) Tier 2 Purchase 6": 1020006,
+    "System Upgrades (Green) Tier 2 Purchase 7": 1020007,
+    "System Upgrades (Green) Tier 2 Purchase 8": 1020008,
+
+    "System Upgrades (Green) Tier 3 Purchase 1": 1030001,
+    "System Upgrades (Green) Tier 3 Purchase 2": 1030002,
+    "System Upgrades (Green) Tier 3 Purchase 3": 1030003,
+    "System Upgrades (Green) Tier 3 Purchase 4": 1030004,
+    "System Upgrades (Green) Tier 3 Purchase 5": 1030005,
+    "System Upgrades (Green) Tier 3 Purchase 6": 1030006,
+    "System Upgrades (Green) Tier 3 Purchase 7": 1030007,
+    "System Upgrades (Green) Tier 3 Purchase 8": 1030008,
+    "System Upgrades (Green) Tier 3 Purchase 9": 1030009,
+
+    "System Upgrades (Red) Tier 1 Purchase 1": 1040001,
+    "System Upgrades (Red) Tier 1 Purchase 2": 1040002,
+    "System Upgrades (Red) Tier 1 Purchase 3": 1040003,
+    "System Upgrades (Red) Tier 1 Purchase 4": 1040004,
+
+    "System Upgrades (Red) Tier 2 Purchase 1": 1050001,
+    "System Upgrades (Red) Tier 2 Purchase 2": 1050002,
+    "System Upgrades (Red) Tier 2 Purchase 3": 1050003,
+    "System Upgrades (Red) Tier 2 Purchase 4": 1050004,
+    "System Upgrades (Red) Tier 2 Purchase 5": 1050005,
+
+    "System Upgrades (Red) Tier 3 Purchase 1": 1060001,
+    "System Upgrades (Red) Tier 3 Purchase 2": 1060002,
+
+    "Earn 8 Green XP": 1110008,
 }
 
 
@@ -42,57 +90,99 @@ def get_location_names_with_ids(location_names: list[str]) -> dict[str, int | No
 
 def create_all_locations(world: RailRouteWorld) -> None:
     create_regular_locations(world)
-    create_events(world)
+    #create_events(world)
 
 
 def create_regular_locations(world: RailRouteWorld) -> None:
     # Finally, we need to put the Locations ("checks") into their regions.
     # Once again, before we do anything, we can grab our regions we created by using world.get_region()
-    overworld = world.get_region("Overworld")
-    top_left_room = world.get_region("Top Left Room")
-    bottom_right_room = world.get_region("Bottom Right Room")
-    right_room = world.get_region("Right Room")
-
-    # One way to create locations is by just creating them directly via their constructor.
-    bottom_left_chest = RailRouteLocation(
-        world.player, "Bottom Left Chest", world.location_name_to_id["Bottom Left Chest"], overworld
-    )
-
-    # You can then add them to the region.
-    overworld.locations.append(bottom_left_chest)
+    menu = world.get_region("Menu")
+    system_upgrades_green_tier_1 = world.get_region("Tier 1 System Upgrades (Green)")
+    system_upgrades_green_tier_2 = world.get_region("Tier 2 System Upgrades (Green)")
+    system_upgrades_green_tier_3 = world.get_region("Tier 3 System Upgrades (Green)")
 
     # A simpler way to do this is by using the region.add_locations helper.
     # For this, you need to have a dict of location names to their IDs (i.e. a subset of location_name_to_id)
     # Aha! So that's why we made that "get_location_names_with_ids" helper method earlier.
     # You also need to pass your overridden Location class.
-    bottom_right_room_locations = get_location_names_with_ids(
-        ["Bottom Right Room Left Chest", "Bottom Right Room Right Chest"]
+    system_upgrades_green_tier_1_locations = get_location_names_with_ids(
+        ["System Upgrades (Green) Tier 1 Purchase 1",
+         "System Upgrades (Green) Tier 1 Purchase 2",
+         "System Upgrades (Green) Tier 1 Purchase 3",
+         "System Upgrades (Green) Tier 1 Purchase 4",
+         "System Upgrades (Green) Tier 1 Purchase 5",
+         "System Upgrades (Green) Tier 1 Purchase 6",
+         "System Upgrades (Green) Tier 1 Purchase 7",
+         "System Upgrades (Green) Tier 1 Purchase 8",
+         "System Upgrades (Green) Tier 1 Purchase 9"]
     )
-    bottom_right_room.add_locations(bottom_right_room_locations, RailRouteLocation)
 
-    top_left_room_locations = get_location_names_with_ids(["Top Left Room Chest"])
-    top_left_room.add_locations(top_left_room_locations, RailRouteLocation)
+    system_upgrades_green_tier_2_locations = get_location_names_with_ids(
+        ["System Upgrades (Green) Tier 2 Purchase 1",
+         "System Upgrades (Green) Tier 2 Purchase 2",
+         "System Upgrades (Green) Tier 2 Purchase 3",
+         "System Upgrades (Green) Tier 2 Purchase 4",
+         "System Upgrades (Green) Tier 2 Purchase 5",
+         "System Upgrades (Green) Tier 2 Purchase 6",
+         "System Upgrades (Green) Tier 2 Purchase 7",
+         "System Upgrades (Green) Tier 2 Purchase 8"]
+    )
 
-    right_room_locations = get_location_names_with_ids(["Right Room Enemy Drop"])
-    right_room.add_locations(right_room_locations, RailRouteLocation)
+    system_upgrades_green_tier_3_locations = get_location_names_with_ids(
+        ["System Upgrades (Green) Tier 3 Purchase 1",
+         "System Upgrades (Green) Tier 3 Purchase 2",
+         "System Upgrades (Green) Tier 3 Purchase 3",
+         "System Upgrades (Green) Tier 3 Purchase 4",
+         "System Upgrades (Green) Tier 3 Purchase 5",
+         "System Upgrades (Green) Tier 3 Purchase 6",
+         "System Upgrades (Green) Tier 3 Purchase 7",
+         "System Upgrades (Green) Tier 3 Purchase 8",
+         "System Upgrades (Green) Tier 3 Purchase 9"]
+    )
 
-    # Locations may be in different regions depending on the player's options.
-    # In our case, the hammer option puts the Top Middle Chest into its own room called Top Middle Room.
-    top_middle_room_locations = get_location_names_with_ids(["Top Middle Chest"])
-    if world.options.hammer:
-        top_middle_room = world.get_region("Top Middle Room")
-        top_middle_room.add_locations(top_middle_room_locations, RailRouteLocation)
-    else:
-        overworld.add_locations(top_middle_room_locations, RailRouteLocation)
 
-    # Locations may exist only if the player enables certain options.
-    # In our case, the extra_starting_chest option adds the Bottom Left Extra Chest location.
-    if world.options.extra_starting_chest:
-        # Once again, it is important to stress that even though the Bottom Left Extra Chest location doesn't always
-        # exist, it must still always be present in the world's location_name_to_id.
-        # Whether the location actually exists in the seed is purely determined by whether we create and add it here.
-        bottom_left_extra_chest = get_location_names_with_ids(["Bottom Left Extra Chest"])
-        overworld.add_locations(bottom_left_extra_chest, RailRouteLocation)
+    system_upgrades_green_tier_1.add_locations(system_upgrades_green_tier_1_locations, RailRouteLocation)
+    system_upgrades_green_tier_2.add_locations(system_upgrades_green_tier_2_locations, RailRouteLocation)
+    system_upgrades_green_tier_3.add_locations(system_upgrades_green_tier_3_locations, RailRouteLocation)
+
+#   Score check locations
+
+    green_xp_locations = get_location_names_with_ids(["Earn 8 Green XP"])
+
+    menu.add_locations(green_xp_locations, RailRouteLocation)
+
+
+#   Red train system upgrades
+    if world.options.red_trains:
+        system_upgrades_red_tier_1 = world.get_region("Tier 1 System Upgrades (Red)")
+        system_upgrades_red_tier_2 = world.get_region("Tier 2 System Upgrades (Red)")
+        system_upgrades_red_tier_3 = world.get_region("Tier 3 System Upgrades (Red)")
+
+        system_upgrades_red_tier_1_locations = get_location_names_with_ids(
+            ["System Upgrades (Red) Tier 1 Purchase 1",
+             "System Upgrades (Red) Tier 1 Purchase 2",
+             "System Upgrades (Red) Tier 1 Purchase 3",
+             "System Upgrades (Red) Tier 1 Purchase 4"]
+        )
+
+        system_upgrades_red_tier_2_locations = get_location_names_with_ids(
+            ["System Upgrades (Red) Tier 2 Purchase 1",
+             "System Upgrades (Red) Tier 2 Purchase 2",
+             "System Upgrades (Red) Tier 2 Purchase 3",
+             "System Upgrades (Red) Tier 2 Purchase 4",
+             "System Upgrades (Red) Tier 2 Purchase 5"]
+        )
+
+        system_upgrades_red_tier_3_locations = get_location_names_with_ids(
+            ["System Upgrades (Red) Tier 3 Purchase 1",
+             "System Upgrades (Red) Tier 3 Purchase 2"]
+        )
+
+        system_upgrades_red_tier_1.add_locations(system_upgrades_red_tier_1_locations, RailRouteLocation)
+        system_upgrades_red_tier_2.add_locations(system_upgrades_red_tier_2_locations, RailRouteLocation)
+        system_upgrades_red_tier_3.add_locations(system_upgrades_red_tier_3_locations, RailRouteLocation)
+
+
 
 
 def create_events(world: RailRouteWorld) -> None:
