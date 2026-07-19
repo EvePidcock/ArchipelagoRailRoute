@@ -10,26 +10,111 @@ if TYPE_CHECKING:
 # Every item must have a unique integer ID associated with it.
 # We will have a lookup from item name to ID here that, in world.py, we will import and bind to the world class.
 # Even if an item doesn't exist on specific options, it must be present in this lookup.
+
+#these ids are sorta arbitrary rn? idk
 ITEM_NAME_TO_ID = {
-    "Key": 1,
-    "Sword": 2,
-    "Shield": 3,
-    "Hammer": 4,
-    "Health Upgrade": 5,
-    "Confetti Cannon": 6,
-    "Math Trap": 7,
+    "Autoblocks": 1010001,
+    "Auto-accept Trains": 1010002,
+    "Automatic Routing": 1010003,
+    "Auto-reverse Trains": 1010004,
+    "Manual Signal Route Preview": 1010005,
+    "Signaling Safety": 1010006,
+    "Platform Adjustments": 1010007,
+    "Train Alerts": 1010009,
+
+    "Intercity Contracts": 1020002,
+    "Timetable Adjustments": 1020003,
+    "Routing Queue": 1020004,
+    "Departure Sensor": 1020005,
+    "Arrival Sensor": 1020006,
+
+    "Routing Sensor": 1030001,
+    "Structural Contracts Manager": 1030002,
+    "Financial Contracts Manager": 1030003,
+    "Regional Contracts Manager": 1030004,
+    "Faster Switches": 1030005,
+
+    "Freights": 1040001,
+    "Regional Trains": 1040002,
+    "Shunting Commands": 1040003,
+    "Shunting Tracks": 1040004,
+
+    "Stabling Sensor": 1050001,
+    "Urban Transit Contracts": 1050002,
+    "Tunnels": 1050004,
+    "Advanced Arrival Sensor": 1050005,
+
+    "Regional Trains Stabling": 1060001,
+    "Advanced Routing Sensor": 1060002,
+
+    "Progressive Track Speed": 201,
+    "Progressive Station Cap": 202,
+    "Progressive Platform Cap": 203,
+    "Progressive Contract Offers": 204,
+
+    "System Upgrades (Green) Tier 1 Unlock": 101,
+    "System Upgrades (Green) Tier 2 Unlock": 102,
+    "System Upgrades (Green) Tier 3 Unlock": 103,
+    "System Upgrades (Red) Tier 1 Unlock": 111,
+    "System Upgrades (Red) Tier 2 Unlock": 112,
+    "System Upgrades (Red) Tier 3 Unlock": 113,
+
+    "Bonus Star": 5,
+    "Money": 6
+
 }
 
 # Items should have a defined default classification.
 # In our case, we will make a dictionary from item name to classification.
 DEFAULT_ITEM_CLASSIFICATIONS = {
-    "Key": ItemClassification.progression,
-    "Sword": ItemClassification.progression | ItemClassification.useful,  # Items can have multiple classifications.
-    "Shield": ItemClassification.progression,
-    "Hammer": ItemClassification.progression,
-    "Health Upgrade": ItemClassification.useful,
-    "Confetti Cannon": ItemClassification.filler,
-    "Math Trap": ItemClassification.trap,
+    "Autoblocks": ItemClassification.progression,
+    "Auto-accept Trains": ItemClassification.useful,
+    "Automatic Routing": ItemClassification.progression,
+    "Auto-reverse Trains": ItemClassification.useful,
+    "Manual Signal Route Preview": ItemClassification.useful,
+    "Signaling Safety": ItemClassification.useful,
+    "Platform Adjustments": ItemClassification.useful,
+    "Train Alerts": ItemClassification.useful,
+
+    "Intercity Contracts": ItemClassification.progression,
+    "Timetable Adjustments": ItemClassification.useful,
+    "Routing Queue": ItemClassification.useful,
+    "Departure Sensor": ItemClassification.useful,
+    "Arrival Sensor": ItemClassification.useful,
+
+    "Routing Sensor": ItemClassification.useful,
+    "Structural Contracts Manager": ItemClassification.useful,
+    "Financial Contracts Manager": ItemClassification.useful,
+    "Regional Contracts Manager": ItemClassification.useful,
+    "Faster Switches": ItemClassification.useful,
+
+    "Freights": ItemClassification.progression,
+    "Regional Trains": ItemClassification.progression,
+    "Shunting Commands": ItemClassification.useful,
+    "Shunting Tracks": ItemClassification.useful,
+
+    "Stabling Sensor": ItemClassification.useful,
+    "Urban Transit Contracts": ItemClassification.progression,
+    "Tunnels": ItemClassification.progression,
+    "Advanced Arrival Sensor": ItemClassification.useful,
+
+    "Regional Trains Stabling": ItemClassification.useful,
+    "Advanced Routing Sensor": ItemClassification.useful,
+
+    "Progressive Track Speed": ItemClassification.progression | ItemClassification.useful,
+    "Progressive Station Cap": ItemClassification.progression,
+    "Progressive Platform Cap": ItemClassification.progression,
+    "Progressive Contract Offers": ItemClassification.progression,
+
+    "System Upgrades (Green) Tier 1 Unlock": ItemClassification.progression,
+    "System Upgrades (Green) Tier 2 Unlock": ItemClassification.progression,
+    "System Upgrades (Green) Tier 3 Unlock": ItemClassification.progression,
+    "System Upgrades (Red) Tier 1 Unlock": ItemClassification.progression,
+    "System Upgrades (Red) Tier 2 Unlock": ItemClassification.progression,
+    "System Upgrades (Red) Tier 3 Unlock": ItemClassification.progression,
+
+    "Bonus Star": ItemClassification.useful | ItemClassification.filler,
+    "Money": ItemClassification.filler,
 }
 
 
@@ -43,16 +128,8 @@ class RailRouteItem(Item):
 # To do this, it must define a function called world.get_filler_item_name(), which we will define in world.py later.
 # For now, let's make a function that returns the name of a random filler item here in items.py.
 def get_random_filler_item_name(world: RailRouteWorld) -> str:
-    # APQuest has an option called "trap_chance".
-    # This is the percentage chance that each filler item is a Math Trap instead of a Confetti Cannon.
-    # For this purpose, we need to use a random generator.
 
-    # IMPORTANT: Whenever you need to use a random generator, you must use world.random.
-    # This ensures that generating with the same generator seed twice yields the same output.
-    # DO NOT use a bare random object from Python's built-in random module.
-    if world.random.randint(0, 99) < world.options.trap_chance:
-        return "Math Trap"
-    return "Confetti Cannon"
+    return "Money"
 
 
 def create_item_with_correct_classification(world: RailRouteWorld, name: str) -> RailRouteItem:
@@ -64,8 +141,8 @@ def create_item_with_correct_classification(world: RailRouteWorld, name: str) ->
 
     # It is perfectly normal and valid for an item's classification to differ based on the player's options.
     # In our case, Health Upgrades are only relevant to logic (and thus labeled as "progression") in hard mode.
-    if name == "Health Upgrade" and world.options.hard_mode:
-        classification = ItemClassification.progression
+    #if name == "Health Upgrade" and world.options.hard_mode:
+    #    classification = ItemClassification.progression
 
     return RailRouteItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
 
@@ -82,21 +159,59 @@ def create_all_items(world: RailRouteWorld) -> None:
     # First, we create a list containing all the items that always exist.
 
     itempool: list[Item] = [
-        world.create_item("Key"),
-        world.create_item("Sword"),
-        world.create_item("Shield"),
-        world.create_item("Health Upgrade"),
-        world.create_item("Health Upgrade"),
+        world.create_item("Autoblocks"),
+        world.create_item("Auto-accept Trains"),
+        world.create_item("Automatic Routing"),
+        world.create_item("Auto-reverse Trains"),
+        world.create_item("Manual Signal Route Preview"),
+        world.create_item("Signaling Safety"),
+        world.create_item("Platform Adjustments"),
+        world.create_item("Train Alerts"),
+
+        world.create_item("Intercity Contracts"),
+        world.create_item("Timetable Adjustments"),
+        world.create_item("Routing Queue"),
+        world.create_item("Departure Sensor"),
+        world.create_item("Arrival Sensor"),
+
+        world.create_item("Routing Sensor"),
+        world.create_item("Structural Contracts Manager"),
+        world.create_item("Financial Contracts Manager"),
+        world.create_item("Regional Contracts Manager"),
+        world.create_item("Faster Switches"),
+
+        world.create_item("Progressive Track Speed"),
+        world.create_item("Progressive Station Cap"),
+        world.create_item("Progressive Platform Cap"),
+        world.create_item("Progressive Contract Offers"),
+
+        world.create_item("Bonus Star"),
+        world.create_item("Money")
     ]
 
-    # Some items may only exist if the player enables certain options.
-    # In our case, If the hammer option is enabled, the sixth item is the Hammer.
-    # Otherwise, we add a filler Confetti Cannon.
-    if world.options.hammer:
-        # Once again, it is important to stress that even though the Hammer doesn't always exist,
-        # it must be present in the worlds item_name_to_id.
-        # Whether it is actually in the itempool is determined purely by whether we create and add the item here.
-        itempool.append(world.create_item("Hammer"))
+    if world.options.red_trains:
+        itempool.append(world.create_item("Freights"))
+        itempool.append(world.create_item("Regional Trains"))
+        itempool.append(world.create_item("Shunting Commands"))
+        itempool.append(world.create_item("Shunting Tracks"))
+
+        itempool.append(world.create_item("Stabling Sensor"))
+        itempool.append(world.create_item("Urban Transit Contracts"))
+        itempool.append(world.create_item("Tunnels"))
+        itempool.append(world.create_item("Advanced Arrival Sensor"))
+
+        itempool.append(world.create_item("Regional Trains Stabling"))
+        itempool.append(world.create_item("Advanced Routing Sensor"))
+
+    if world.options.system_upgrades_locked_behind_keys:
+        itempool.append(world.create_item("System Upgrades (Green) Tier 1 Unlock"))
+        itempool.append(world.create_item("System Upgrades (Green) Tier 2 Unlock"))
+        itempool.append(world.create_item("System Upgrades (Green) Tier 3 Unlock"))
+
+        if world.options.red_trains:
+            itempool.append(world.create_item("System Upgrades (Red) Tier 1 Unlock"))
+            itempool.append(world.create_item("System Upgrades (Red) Tier 2 Unlock"))
+            itempool.append(world.create_item("System Upgrades (Red) Tier 3 Unlock"))
 
     # Archipelago requires that each world submits as many locations as it submits items.
     # This is where we can use our filler and trap items.
@@ -160,7 +275,7 @@ def create_all_items(world: RailRouteWorld) -> None:
     # They will be sent as soon as they connect for the first time (depending on your client's item handling flag).
     # Players can add precollected items themselves via the generic "start_inventory" option.
     # If you want to add your own precollected items, you can do so via world.push_precollected().
-    if world.options.start_with_one_confetti_cannon:
+    #if world.options.start_with_one_confetti_cannon:
         # We're adding a filler item, but you can also add progression items to the player's precollected inventory.
-        starting_confetti_cannon = world.create_item("Confetti Cannon")
-        world.push_precollected(starting_confetti_cannon)
+        #starting_confetti_cannon = world.create_item("Confetti Cannon")
+        #world.push_precollected(starting_confetti_cannon)

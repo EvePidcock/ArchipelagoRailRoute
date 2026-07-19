@@ -90,7 +90,7 @@ def get_location_names_with_ids(location_names: list[str]) -> dict[str, int | No
 
 def create_all_locations(world: RailRouteWorld) -> None:
     create_regular_locations(world)
-    #create_events(world)
+    create_events(world)
 
 
 def create_regular_locations(world: RailRouteWorld) -> None:
@@ -193,12 +193,12 @@ def create_events(world: RailRouteWorld) -> None:
     # It is treated during generation like any other location, but then it is discarded.
     # This location cannot be "sent" and its item cannot be "received", but the item can be used in logic rules.
     # Since we are creating more locations and adding them to regions, we need to grab those regions again first.
-    top_left_room = world.get_region("Top Left Room")
-    final_boss_room = world.get_region("Final Boss Room")
+    #top_left_room = world.get_region("Top Left Room")
+    #final_boss_room = world.get_region("Final Boss Room")
 
     # One way to create an event is simply to use one of the normal methods of creating a location.
-    button_in_top_left_room = RailRouteLocation(world.player, "Top Left Room Button", None, top_left_room)
-    top_left_room.locations.append(button_in_top_left_room)
+    #button_in_top_left_room = RailRouteLocation(world.player, "Top Left Room Button", None, top_left_room)
+    #top_left_room.locations.append(button_in_top_left_room)
 
     # We then need to put an event item onto the location.
     # An event item is an item whose code is "None" (same as the event location's address),
@@ -208,15 +208,15 @@ def create_events(world: RailRouteWorld) -> None:
     # it is common practice to create the item when creating the location.
     # Since locations also have to be finalized after world.create_regions(), which runs before world.create_items(),
     # we'll create both the event location and the event item in our locations.py code.
-    button_item = items.RailRouteItem("Top Left Room Button Pressed", ItemClassification.progression, None, world.player)
-    button_in_top_left_room.place_locked_item(button_item)
+    #button_item = items.RailRouteItem("Top Left Room Button Pressed", ItemClassification.progression, None, world.player)
+    #button_in_top_left_room.place_locked_item(button_item)
 
     # A way simpler way to do create an event location/item pair is by using the region.create_event helper.
     # Luckily, we have another event we want to create: The Victory event.
     # We will use this event to track whether the player can win the game.
     # The Victory event is a completely optional abstraction - This will be discussed more in set_rules().
-    final_boss_room.add_event(
-        "Final Boss Defeated", "Victory", location_type=RailRouteLocation, item_type=items.RailRouteItem
+    world.get_region("Menu").add_event(
+        "Game finished", "Victory", location_type=RailRouteLocation, item_type=items.RailRouteItem
     )
 
     # If you create all your regions and locations line-by-line like this,
@@ -224,3 +224,4 @@ def create_events(world: RailRouteWorld) -> None:
     # Many worlds use more data-driven approaches using dataclasses or NamedTuples.
     # However, it is worth understanding how the actual creation of regions and locations works,
     # That way, we're not just mindlessly copy-pasting! :)
+    return

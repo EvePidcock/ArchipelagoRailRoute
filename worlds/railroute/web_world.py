@@ -22,7 +22,7 @@ class RailRouteWebWorld(WebWorld):
     # The "link" parameter is unused, but we still need to provide it.
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up APQuest for MultiWorld.",
+        "A guide to setting up Rail Route for Archipelago.",
         "English",
         "setup_en.md",
         "setup/en",

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from rule_builder.rules import Has, True_
+from rule_builder.rules import Has, True_, HasAll
 
 from typing import TYPE_CHECKING
 
@@ -28,10 +28,10 @@ def set_all_entrance_rules(world: RailRouteWorld) -> None:
     green_1_to_2 = world.get_entrance("Green Tier 1 to 2")
     green_2_to_3 = world.get_entrance("Green Tier 2 to 3")
 
-    if world.options.system_upgrade_locked_behind_keys:
-        world.set_rule(menu_to_green_1, Has("Progressive System Upgrade Tier Unlock (Green)", 1))
-        world.set_rule(green_1_to_2, Has("Progressive System Upgrade Tier Unlock (Green)", 2))
-        world.set_rule(green_2_to_3, Has("Progressive System Upgrade Tier Unlock (Green)", 3))
+    if world.options.system_upgrades_locked_behind_keys:
+        world.set_rule(menu_to_green_1, Has("System Upgrades (Green) Tier 1 Unlock"))
+        world.set_rule(green_1_to_2, Has("System Upgrades (Green) Tier 2 Unlock"))
+        world.set_rule(green_2_to_3, Has("System Upgrades (Green) Tier 3 Unlock"))
 
 
     if world.options.red_trains:
@@ -39,10 +39,10 @@ def set_all_entrance_rules(world: RailRouteWorld) -> None:
         red_1_to_2 = world.get_entrance("Red Tier 1 to 2")
         red_2_to_3 = world.get_entrance("Red Tier 2 to 3")
 
-        if world.options.system_upgrade_locked_behind_keys:
-            world.set_rule(menu_to_red_1, Has("Progressive System Upgrade Tier Unlock (Red)", 1))
-            world.set_rule(red_1_to_2, Has("Progressive System Upgrade Tier Unlock (Red)", 2))
-            world.set_rule(red_2_to_3, Has("Progressive System Upgrade Tier Unlock (Red)", 3))
+        if world.options.system_upgrades_locked_behind_keys:
+            world.set_rule(menu_to_red_1, Has("System Upgrades (Red) Tier 1 Unlock"))
+            world.set_rule(red_1_to_2, Has("System Upgrades (Red) Tier 2 Unlock"))
+            world.set_rule(red_2_to_3, Has("System Upgrades (Red) Tier 3 Unlock"))
 
 
 def set_all_location_rules(world: RailRouteWorld) -> None:
@@ -55,19 +55,13 @@ def set_all_location_rules(world: RailRouteWorld) -> None:
     # So, we need to set requirements on the Locations themselves.
     # Since combat is a bit more complicated, we'll use this chance to cover some advanced access rule concepts.
 
-
-    eight_green_xp_loc = world.get_location("Earn 8 Green XP")
-    eight_green_xp_rule = Has("") | True_
-
-    world.set_rule(eight_green_xp_loc, eight_green_xp_rule)
+    victory = world.get_location("Game finished")
+    world.set_rule(victory, HasAll("Autoblocks", "Progressive Contract Offers", "Progressive Track Speed", "System Upgrades (Green) Tier 3 Unlock"))
+    return
 
 
 
 def set_completion_condition(world: RailRouteWorld) -> None:
-    # Finally, we need to set a completion condition for our world, defining what the player needs to win the game.
-    # You can just set a completion condition directly like any other condition, referencing items the player receives:
-    world.multiworld.completion_condition[world.player] = lambda state: state.has_all(("Sword", "Shield"), world.player)
-
     # In our case, we went for the Victory event design pattern (see create_events() in locations.py).
     # So lets undo what we just did, and instead set the completion condition to:
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)
